@@ -1,6 +1,6 @@
 ### this example is froked from [react-boilerplate/react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
 
-# 淺談 react 優化(Avoid Reconciliation) 和 [reselect](https://github.com/reactjs/reselect)。
+# 淺談 react 優化([Avoid Reconciliation](https://reactjs.org/docs/optimizing-performance.html#avoid-reconciliation)) 和 [reselect](https://github.com/reactjs/reselect)。
 
  - 攻略點　： 無效 render(wasted render)。
  - 發生原因： react 運作原理 ＋ javascript 語言特性 引發此問題。
