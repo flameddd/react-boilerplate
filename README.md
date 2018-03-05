@@ -1,4 +1,4 @@
-## froked from [react-boilerplate/react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
+### this example is froked from [react-boilerplate/react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
 
 # 淺談 react 優化(waste render) 和 [reselect](https://github.com/reactjs/reselect)。
 
