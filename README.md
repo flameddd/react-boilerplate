@@ -6,3 +6,8 @@
  - 發生原因： react 運作原理 ＋ javascript 語言特性 引發此問題。
  - 解決方法： 變數 memorize 起來，使得 prevProps === this.props // true ，就不會 trigger render function 了。 
  - 適合對象： react 開發新手．  
+
+
+javascript 是 call by value 還是 call by ref ？
+reac.Component 跟 react.PureComponent 有什麼差別？
+在
