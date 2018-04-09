@@ -1,0 +1,1 @@
+export const requestURL = (username) => `https://api.github.com/users/${username}/repos?type=all&sort=updated`;

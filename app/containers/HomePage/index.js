@@ -28,6 +28,18 @@ import { changeUsername } from './actions';
 import { makeSelectUsername } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import Ex1 from './example1';
+import Example1Log from './example1Log';
+import EX1PureNest from './example1PureNest';
+import EX1Bnb from './exampleAirBnB';
+
+import ExX from './exampleX';
+import styled from 'styled-components';
+
+const Conatiner = styled.article`
+  display: flex;
+  flex-wrap: wrap;
+`;
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   /**
@@ -84,6 +96,13 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
             <ReposList {...reposListProps} />
           </Section>
         </div>
+        <Conatiner>
+          <Ex1 />
+          <Example1Log />
+          <EX1PureNest />
+          <EX1Bnb />
+          <ExX />
+        </Conatiner>
       </article>
     );
   }
