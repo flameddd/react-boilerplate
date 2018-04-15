@@ -20,7 +20,7 @@ const Container = styled.article`
   border: 1px solid;
 `;
 
-export class Example extends React.Component {
+export class Parent extends React.Component {
   state = {
     username: "flameddd",
   }
@@ -37,25 +37,21 @@ export class Example extends React.Component {
       <Container>
         <div>
           <Section>
-            <h4> 範例1 </h4>
+            <h4> 範例1 (example1.js) </h4>
             <h4>
-              Reac.Component's shouldcomponentupdate defualt return <span style={{ color: "red" }}>true</span>
+              {`this.setState({username: "flameddd" })`}
             </h4>
             <Form onSubmit={this.handleSubmit}>
               <label htmlFor="username">
-                <AtPrefix>
-                  <FormattedMessage {...messages.trymeAtPrefix} />
-                </AtPrefix>
+                @
                 <Input
-                  id="username"
                   type="text"
-                  placeholder="mxstbr"
                   value={this.state.username}
                   onChange={() => {}}
                 />
               </label>
             </Form>
-            <ShowName username={this.state.username} />
+            <Child username={this.state.username} />
           </Section>
         </div>
       </Container>
@@ -65,10 +61,10 @@ export class Example extends React.Component {
 
 
 @visualizeRender()
-class ShowName extends React.Component {
+class Child extends React.Component {
   render() {
     return (<span>{this.props.username}</span>)
   }
 }
 
-export default Example;
+export default Parent;

@@ -1,16 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import H2 from 'components/H2';
-import ReposList from 'components/ReposList';
-import AtPrefix from './AtPrefix';
 import Form from './Form';
 import Input from './Input';
 import Section from './Section';
-import messages from './messages';
-import axios from 'axios';
-import request from 'utils/request';
-import { requestURL } from 'constants/endpoint.js';
 import styled from 'styled-components';
 import { visualizeRender } from 'react-global-render-visualizer';
 import { compose, withProps } from 'recompose';
@@ -33,7 +24,7 @@ const Container = styled.article`
   border: 1px solid;
 `;
 
-export class Example extends React.Component {
+export class Parent extends React.Component {
   state = {
     username: "flameddd",
     age: 18,
@@ -60,15 +51,11 @@ export class Example extends React.Component {
       <Container>
         <div>
           <Section>
+            <h4> 範例2-3 (example2AirBnB.js) </h4>
             <h4> <a href="https://medium.com/airbnb-engineering/recent-web-performance-fixes-on-airbnb-listing-pages-6cd8d93df6f4" target="_blank">airbnb 文章範例</a> </h4>
-            <h4>
-              Reac.Component
-            </h4>
             <Form onSubmit={this.handleSubmit}>
               <label htmlFor="username">
-                <AtPrefix>
-                  <FormattedMessage {...messages.trymeAtPrefix} />
-                </AtPrefix>
+                @
                 <Input
                   id="username"
                   type="text"
@@ -78,8 +65,8 @@ export class Example extends React.Component {
                 />
               </label>
             </Form>
-            <ShowName content={content} />
-            <ShowName content={content1} />
+            <Child content={content} />
+            <Child content={content1} />
           </Section>
         </div>
       </Container>
@@ -89,7 +76,7 @@ export class Example extends React.Component {
 
   
 @visualizeRender()
-class ShowName extends React.Component {
+class Child extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return this.props.content !== nextProps.content
   }
@@ -112,4 +99,4 @@ const enhance = compose(
     id: 'A1214',
   })),
 )
-export default enhance(Example);
+export default enhance(Parent);

@@ -30,10 +30,11 @@ import reducer from './reducer';
 import saga from './saga';
 import Ex1 from './example1';
 import Example1Log from './example1Log';
-import EX1PureNest from './example1PureNest';
-import EX1Bnb from './exampleAirBnB';
+import EX2 from './example2';
+import EX2Obj from './example2Obj';
+import EX2ObjReselect from './example2ObjReselect';
+import EX2Bnb from './example2AirBnB';
 
-import ExX from './exampleX';
 import styled from 'styled-components';
 
 const Conatiner = styled.article`
@@ -68,40 +69,18 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         <div>
           <CenteredSection>
             <H2>
-              <FormattedMessage {...messages.startProjectHeader} />
+              淺談 react 優化(Avoid Reconciliation) 和 reselect。
             </H2>
-            <p>
-              <FormattedMessage {...messages.startProjectMessage} />
-            </p>
           </CenteredSection>
-          <Section>
-            <H2>
-              <FormattedMessage {...messages.trymeHeader} />
-            </H2>
-            <Form onSubmit={this.props.onSubmitForm}>
-              <label htmlFor="username">
-                <FormattedMessage {...messages.trymeMessage} />
-                <AtPrefix>
-                  <FormattedMessage {...messages.trymeAtPrefix} />
-                </AtPrefix>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="mxstbr"
-                  value={this.props.username}
-                  onChange={this.props.onChangeUsername}
-                />
-              </label>
-            </Form>
-            <ReposList {...reposListProps} />
-          </Section>
         </div>
         <Conatiner>
           <Ex1 />
           <Example1Log />
-          <EX1PureNest />
-          <EX1Bnb />
-          <ExX />
+          <EX2 />
+          <EX2Obj />
+          <EX2ObjReselect />
+          <EX2Bnb />
+
         </Conatiner>
       </article>
     );

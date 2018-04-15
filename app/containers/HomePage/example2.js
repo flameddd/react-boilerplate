@@ -1,8 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import H2 from 'components/H2';
+import ReposList from 'components/ReposList';
+import AtPrefix from './AtPrefix';
 import Form from './Form';
 import Input from './Input';
 import Section from './Section';
+import messages from './messages';
+import axios from 'axios';
+import request from 'utils/request';
+import { requestURL } from 'constants/endpoint.js';
 import styled from 'styled-components';
 import { visualizeRender } from 'react-global-render-visualizer';
 
@@ -28,8 +36,8 @@ export class Parent extends React.Component {
       <Container>
         <div>
           <Section>
-            <h4> 範例1-1 (example1Log.js) </h4>
-            <h4> life cycle 加上 console.log </h4>
+            <h4> 範例2 (example2.js) </h4>
+            <h4> 使用 shouldComponentUpdate 避免 wasted redner </h4>
             <Form onSubmit={this.handleSubmit}>
               <label htmlFor="username">
                 @
@@ -54,9 +62,9 @@ class Child extends React.Component {
   componentWillReceiveProps(nextProps) {
     console.log("console log => componentWillReceiveProps");
   }
-  shouldComponentUpdate() {
+  shouldComponentUpdate(nextProps) {
     console.log("console log => shouldComponentUpdate");
-    return true;
+    return nextProps.username !== this.props.username;
   }
   componentWillUpdate() {
     console.log("console log => componentWillUpdate");
