@@ -247,8 +247,8 @@ render() {
 
 # 第２次 Q&A
 
-## 實戰思維：如果明天我就要玩 reselect ，那該怎麼下手？：
- 1. 安裝任一個 react 監控套件。
+## 如果明天我就要玩 reselect ，那該怎麼下手？：
+ 1. 安裝任一個 react 監控套件。  
  ```javascript
  // 找你自己常用 or 順眼的套件就好，這套只是參考
 npm install --save-dev react-global-render-visualizer
@@ -280,7 +280,7 @@ npm install --save-dev react-global-render-visualizer
   export default connect(mapStateToProps, mapDispatchProps)(visualizeRender()(Container))
   ```
 
- 3. update 符合預期嗎？
+ 3. update 符合預期嗎？
   - 操作看看該 components ， render function 執行的時機符合預期嗎？（這邊用了 預期 這個字眼，代表你應該對該 component 的行為有基本的了解）。  
 
  4. 沒事最好，但如果有某幾個 props or state 一直重複 trigger render function ：
@@ -289,6 +289,17 @@ npm install --save-dev react-global-render-visualizer
  - 跟 ***該 props or state*** 存的資料格式是？用來做什麼的？
  - 有沒有機會調整 component (自己、上層)結構 or props, state 的取值？(props, state 的資料結構比較難下手，要改資料結構幾乎等於是重構了。)
  - 好好了解trigger ***此 component*** render function 的是什麼變數  
+
+```javascript
+const mapStateToProps = (state, ownProps) => ({
+  config: state.get('userConfig'),
+});
+
+...
+render () {
+  return <div>{this.props.config.enableAccount}</div>
+}
+```
 
  5. 可以抽出來的計算
  - ***此 component*** 的 render function 有沒有運算可以抽出來在 reselect 做掉？
@@ -340,7 +351,6 @@ render () {
 }
 
  ```
-
 
 # final Q&A, 祝週末愉快～
 
