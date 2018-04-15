@@ -17,22 +17,14 @@ import IssueLink from './IssueLink';
 import RepoLink from './RepoLink';
 import Wrapper from './Wrapper';
 
-export class RepoListItem extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+export class RepoListItem extends React.Component {
   render() {
     const item = this.props.item;
-    let nameprefix = '';
-
-    // If the repository is owned by a different person than we got the data for
-    // it's a fork and we should show the name of the owner
-    if (item.owner.login !== this.props.currentUser) {
-      nameprefix = `${item.owner.login}/`;
-    }
-
     // Put together the content of the repository
     const content = (
       <Wrapper>
         <RepoLink href="javascript:void(0)" >
-          {nameprefix + item.name}
+          {item.name}
         </RepoLink>
         <IssueLink href="javascript:void(0)" >
           <IssueIcon />
@@ -48,11 +40,5 @@ export class RepoListItem extends React.PureComponent { // eslint-disable-line r
   }
 }
 
-RepoListItem.propTypes = {
-  item: PropTypes.object,
-  currentUser: PropTypes.string,
-};
 
-export default connect(createStructuredSelector({
-  currentUser: makeSelectCurrentUser(),
-}))(RepoListItem);
+export default RepoListItem;

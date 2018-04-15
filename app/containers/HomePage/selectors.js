@@ -1,6 +1,3 @@
-/**
- * Homepage selectors
- */
 
 import { createSelector } from 'reselect';
 
@@ -11,7 +8,13 @@ const makeSelectUsername = () => createSelector(
   (homeState) => homeState.get('username')
 );
 
+const selectUsername = createSelector(
+  selectHome,
+  (homeState) => homeState.get('username')
+);
+
 export {
   selectHome,
   makeSelectUsername,
+  selectUsername,
 };
