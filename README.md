@@ -144,7 +144,7 @@ const mySelector = createSelector(
   ...
   const ChildProps = selector(this.state);
  ```
-   
+ - [Airbnb 文章範例 review](https://medium.com/airbnb-engineering/recent-web-performance-fixes-on-airbnb-listing-pages-6cd8d93df6f4)
  ```javascript
  // 直接使用
  const getExperiments = createSelector(

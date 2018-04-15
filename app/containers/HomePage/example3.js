@@ -90,16 +90,16 @@ const selectRepos = createSelector(
 );
 // selectRepos(state),
 
-// const mapStateToProps = state => ({
-//   repos: state.getIn(['global', 'userData', 'repositories']),
-//   username: selectUsername(state),
-//   testConnect: testConnect(),
-// });
+const mapStateToProps = state => ({
+  repos: state.getIn(['global', 'userData', 'repositories']),
+  username: selectUsername(state),
+  testConnect: testConnect(),
+});
 
-const mapStateToProps = createStructuredSelector({
-  repos: selectRepos,
-  username: selectUsername,
-})
+// const mapStateToProps = createStructuredSelector({
+//   repos: selectRepos,
+//   username: selectUsername,
+// })
 
 
 
