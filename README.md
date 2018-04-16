@@ -27,7 +27,7 @@ visit http://localhost:3000/
    2. shouldComponentUpdate(nextProps, nextState)
    3. componentWillUpdate(nextProps, nextState)
    4. render()
-   5. componentDidUpdate(prevProps, prevState)
+   5. componentDidUpdate(prevProps, prevState)  
 
 ## 定義 wasted render ： 
  - 參考：範例1-1  
@@ -93,8 +93,9 @@ visit http://localhost:3000/
 ## 使用 reselect
  - 使用 reselect 的 createselector 解決範例 2-1 的問題  
  - 參考：範例2-2、範例2-3  
- - 我直接講解 document 而這邊不多做任何文字說明，是希望未來大家直接去看 [reselect createselector document](https://github.com/reactjs/reselect#createselectorinputselectors--inputselectors-resultfunc) ，因為今天講完，你們忘掉的機率很高。
- - input selector 的 return 沒變(!== false)，就回傳上一次的結果，否則重算新的結果。
+ - [reselect createselector document](https://github.com/reactjs/reselect#createselectorinputselectors--inputselectors-resultfunc)  
+ (我直接講解 document 而這邊不多做任何文字說明，是希望未來大家直接去看，因為今天講完，你們忘掉的機率很高。)
+ - input selector 的 return 沒變(!== false)，就回傳上一次的結果。
  - input selector 的 return 有變(!== true)，就回傳重新計算的結果(resultFuction return)。
  - syntex：最後一個參數是 resultFunc，其他前面的都是 inputSelectors
 
@@ -137,8 +138,8 @@ const mySelector = createSelector(
  2. 使用時呼叫它。  
  ```javascript
  const selector = createSelector(
-  (state) => state.username, // "flameddd"
-  (parameter1) => ({
+  state => state.username, // "flameddd"
+  parameter1 => ({
       name: parameter1
   }));
   ...
@@ -147,28 +148,28 @@ const mySelector = createSelector(
  - [Airbnb 文章範例 review](https://medium.com/airbnb-engineering/recent-web-performance-fixes-on-airbnb-listing-pages-6cd8d93df6f4)
  ```javascript
  // 直接使用
- const getExperiments = createSelector(
-  ({ experimentsFromProps }) => experimentsFromProps,
-  ({ experimentsFromState }) => experimentsFromState,
-  (experimentsFromProps, experimentsFromState) => ({
-    ...experimentsFromProps,
-    ...experimentsFromState,
-  }),
-);
-...
-render() {
-  ...
-  const finalExperiments = getExperiments({
-    experimentsFromProps: experiments,
-    experimentsFromState: this.state.experiments,
-  });
-  return (
-    <WrappedComponent
-      {...otherProps}
-      experiments={finalExperiments}
-    />
+  const getExperiments = createSelector(
+    ({ experimentsFromProps }) => experimentsFromProps,
+    ({ experimentsFromState }) => experimentsFromState,
+    (experimentsFromProps, experimentsFromState) => ({
+      ...experimentsFromProps,
+      ...experimentsFromState,
+    }),
   );
-}
+...
+  render() {
+    ...
+    const finalExperiments = getExperiments({
+      experimentsFromProps: experiments,
+      experimentsFromState: this.state.experiments,
+    });
+    return (
+      <WrappedComponent
+        {...otherProps}
+        experiments={finalExperiments}
+      />
+    );
+  }
  ```
 
 # 第１次 Q&A
@@ -233,7 +234,29 @@ render() {
   })
 ```
 
-### 檔案結構參考
+## createSelectorCreator
+## defaultMemoize
+
+## reselect 變數命名
+ - 參考 reselect 官方 => "變數名稱Selector"
+```javascript
+  const shopItemsSelector = state => state.shop.items //shopItems + Selector
+  const taxPercentSelector = state => state.shop.taxPercent // taxPercent + Selector
+
+// subtotal + Selector
+  const subtotalSelector = createSelector(
+    shopItemsSelector,
+    items => items.reduce((acc, item) => acc + item.value, 0)
+  )
+// tax + Selector
+  const taxSelector = createSelector(
+    subtotalSelector,
+    taxPercentSelector,
+    (subtotal, taxPercent) => subtotal * (taxPercent / 100)
+  )
+```
+
+## 檔案結構參考
  - 參考 [react-boilerplate/react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
  - 拆一隻 selectors.js 獨立檔案。
 ![img](app/images/filesStructure.png)

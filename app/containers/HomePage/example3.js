@@ -82,19 +82,37 @@ const addPrefix = repos => repos
   })
   : null;
 
-// repos: addPrefix(state.getIn(['global', 'userData', 'repositories'])),
-// repos: state.getIn(['global', 'userData', 'repositories']),
-const selectRepos = createSelector(
-  (state) => state.getIn(['global', 'userData', 'repositories']),
-  (repos) => addPrefix(repos)
-);
-// selectRepos(state),
-
+// 1. 測試 connect 被執行。
 const mapStateToProps = state => ({
   repos: state.getIn(['global', 'userData', 'repositories']),
   username: selectUsername(state),
   testConnect: testConnect(),
 });
+
+// 2. 如果加上 後處理 更消耗運算
+// const mapStateToProps = state => ({
+//   repos: addPrefix(state.getIn(['global', 'userData', 'repositories'])),
+//   username: selectUsername(state),
+//   testConnect: testConnect(),
+// });
+
+// 3. 使用 reselect
+// const selectRepos = createSelector(
+//   (state) => state.getIn(['global', 'userData', 'repositories']),
+//   (repos) => addPrefix(repos)
+// );
+
+// const mapStateToProps = state => ({
+//   repos: selectRepos(state),
+//   username: selectUsername(state),
+//   testConnect: testConnect(),
+// });
+
+// 補充：如果 testConnect return {} 會怎樣？
+// const testConnect = () => {
+//   console.log("example3 執行 mapStateToProps ");
+//   return {};
+// }
 
 // const mapStateToProps = createStructuredSelector({
 //   repos: selectRepos,
