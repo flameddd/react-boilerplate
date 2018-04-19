@@ -218,19 +218,30 @@ const mySelector = createSelector(
   3. wasted render
 
 ## reselect and mapStateToProps
- - 只是熟悉語法的問題，以下供參考
- - 兩種寫法都可以
 ```javascript
-// 1.某些 props 沒用 reslect 就這樣寫
+// 1. 沿用舊的寫法
   const mapStateToProps = state => ({
     repos: selectRepos(state),
     username: state.getIn(['home', 'username']),
   });
 
-// 2.全部用 reselect、mapStateToProps 的 state, ownProps 會被傳進去
+// 2.mapStateToProps 也可以建立 reselect 
   const mapStateToProps = createStructuredSelector({
     repos: selectRepos,
     username: selectUsername,
+  })
+
+// 2 的寫法可以看成是這樣
+  // const taxSelector = createSelector(
+  //   state => state.getIn(['home', 'repos']),
+  //   state => state.getIn(['home', 'username']),
+  //   (repos, username) => ({ repos, username })
+  // )
+
+// 2-1.如果有的變數還沒有建立 reselect 就這樣寫、語法的問題而已
+  const mapStateToProps = createStructuredSelector({
+    repos: selectRepos,
+    username: state => state.getIn(['home', 'username']),
   })
 ```
 
@@ -328,6 +339,7 @@ render () {
  - ***此 component*** 的 render function 有沒有運算可以抽出來在 reselect 做掉？
  - mapStateToProps 裡的計算。
  - render function 裡的計算。
+ - ``` state.get('config').toJS() ```
   
  6. 別忘了可組合的特性，活用的話可以很強大。
  - state(redux) 的規劃一定不可能完美 fit 每個 container、components 使用情境，隨著新需求的加入，一定有不同的 state 加入。最後會變成 mapStateToProps 傳入好幾個 state ，然後才在 render function 做判斷。
@@ -375,9 +387,16 @@ render () {
 
  ```
 
+### reselect 兩個情境的處理
+ - [想傳變數進去 createselector](https://github.com/reactjs/reselect#q-how-do-i-create-a-selector-that-takes-an-argument)
+ - [共用 createselector - reselect範例](https://github.com/reactjs/reselect#sharing-selectors-with-props-across-multiple-component-instances)
+ - [共用 createselector - redux 官網的範例](https://redux.js.org/recipes/computing-derived-data#sharing-selectors-across-multiple-components)
+
+
+
 # final Q&A, 祝週末愉快～
 
-# 推薦閱讀
+# react優化推薦閱讀
   就算「你」沒法真的實踐這些優化（時間、實務等考量)，但也能學到很多 react 的優化思維。
  - [React Performance Fixes on Airbnb Listing Pages](https://medium.com/airbnb-engineering/recent-web-performance-fixes-on-airbnb-listing-pages-6cd8d93df6f4)
  - [Performance optimisations for React applications](https://medium.com/@alexandereardon/performance-optimisations-for-react-applications-b453c597b191)
