@@ -343,11 +343,11 @@ npm install --save-dev react-global-render-visualizer
 import { createSelector } from 'reselect';
 
 //input selector
-export const selectDiyFolder = state => state.get('diyFolder');
+export const selectFolder = state => state.get('folder');
 
 //selector
 export const selectFilter = createSelector(
-  selectDiyFolder,
+  selectFolder,
   state => state.get('filter').toJS(),
 );
 
