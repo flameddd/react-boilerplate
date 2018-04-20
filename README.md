@@ -354,11 +354,13 @@ export const selectFilter = createSelector(
 ...
 // 3. 串接 reselect 到 connect 中
 // index.js
+import { selectFilter } from './selectors/
+ 
 const mapStateToProps = (state, ownProps) => ({
   filter: selectFilter(state),
 });
 
-// 4. 串完後看有沒有改善、再來思考是否有更好的做法、有哪些處理可以拉到 reselect 處理
+// 4. 串完後看有沒有改善、再來思考是否有更好的做法、有哪些處理可以拉到 reselect 處理git
 
  ```
 
