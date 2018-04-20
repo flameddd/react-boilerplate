@@ -354,7 +354,7 @@ export const selectFilter = createSelector(
 ...
 // 3. 串接 reselect 到 connect 中
 // index.js
-import { selectFilter } from './selectors/'
+import { selectFilter } from './selectors'
  
 const mapStateToProps = (state, ownProps) => ({
   filter: selectFilter(state),
