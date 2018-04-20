@@ -325,15 +325,42 @@ npm install --save-dev react-global-render-visualizer
  - 好好了解trigger ***此 component*** render function 的是什麼變數  
 
 ```javascript
-const mapStateToProps = (state, ownProps) => ({
-  config: state.get('userConfig'),
-});
+  const mapStateToProps = (state, ownProps) => ({
+    config: state.get('userConfig'),
+  });
+
+  ...
+  render () {
+    return <div>{this.props.config.enableAccount}</div>
+  }
+```
+ - 最後決定要拿 reselect 來玩的話
+ ```javascript
+ // 1. 同層目錄下建立 selectors.js 檔案
+ // 2. 先直接目標變數 create selector
+
+// selectors.js
+import { createSelector } from 'reselect';
+
+//input selector
+export const selectDiyFolder = state => state.get('diyFolder');
+
+//selector
+export const selectFilter = createSelector(
+  selectDiyFolder,
+  state => state.get('filter').toJS(),
+);
 
 ...
-render () {
-  return <div>{this.props.config.enableAccount}</div>
-}
-```
+// 3. 串接 reselect 到 connect 中
+// index.js
+const mapStateToProps = (state, ownProps) => ({
+  filter: selectFilter(state),
+});
+
+// 4. 串完後看有沒有改善、再來思考是否有更好的做法、有哪些處理可以拉到 reselect 處理
+
+ ```
 
  5. 可以抽出來的計算
  - ***此 component*** 的 render function 有沒有運算可以抽出來在 reselect 做掉？
