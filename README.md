@@ -360,7 +360,7 @@ const mapStateToProps = (state, ownProps) => ({
   filter: selectFilter(state),
 });
 
-// 4. 串完後看有沒有改善、再來思考是否有更好的做法、有哪些處理可以拉到 reselect 處理git
+// 4. 串完後看有沒有改善、再來思考是否有更好的做法、有哪些處理可以拉到 reselect 處理
 
  ```
 
@@ -433,4 +433,108 @@ render () {
  - [Dragging React performance forward](https://medium.com/@alexandereardon/dragging-react-performance-forward-688b30d40a33)
 
   
+# 後續ＱＡ回答（update 2018/04/26）
+```
+回答下面問題之前，我先區分兩的名詞。如果寫著是「render function」，那我指的是 React.Component 裡面的「render function」。如果寫著「宣染」，那指的是「瀏覽器」的「宣染DOM」行為。
+```
+## Ｑ： 1. fetch從server的行為怎麼處理，ex request 1000 users from server, return array of object. 我想一定是新物件吧。但大部份的操作都跟server有關，寫todo demo都很方便，那如果我下標一個產品，成功需要refresh頁面(拿到剩下多少件)，每次都拿到新的object沒辨法memory.
+## Ａ：
+先看看一些官方文件怎麼寫，[reselect](https://github.com/reactjs/reselect#reselect)
+```
+Selectors are efficient. A selector is not recomputed unless one of its arguments changes.
+```
+[redux](https://redux.js.org/recipes/computing-derived-data#creating-a-memoized-selector) (這邊可能要點進去看，搭配文字上面區塊的程式碼會更好瞭解)
+```
+We would like to replace `getVisibleTodos` with a memoized selector that recalculates `todos` when the value of `state.todos` or `state.visibilityFilter` changes, but not when changes occur in other (unrelated) parts of the state tree.
+```
 
+這邊可以看到一些關鍵句：
+ - `unless one of its arguments changes`
+ - `recalculates todos when the value of state.todos or state.visibilityFilter changes`
+
+也就是說，會變動的東西，本來就是要重新計算、取代上一次`cache`。所以用 reslect 的目的是：
+ - 當我 `data 沒變`時，你不要重新(計算)產生一次給我。(甚至造成後面的wasted render)  
+
+redux 的架構下，除了上面這點之外，還更是因為 react-redux 運作(請參考上面內容 or 影片)的關係，很有可能繁瑣重複 get data，所造成的浪費。所以你從上面 redux 連結可以看到，它談 reselect 頁面的標題是 `Computing Derived Data`  
+```
+ ... If the state tree is large, or the calculation expensive, repeating the calculation on every update may cause performance problems. Reselect can help to avoid these unnecessary recalculations.
+```
+
+每次取回（剩下的）todo ( = todo list changed)時， reselect 都要重算，這完全正確。但很有可能該 React.Component trigger 的原因不是 todo changed 阿(而是其他原因)，此時 reselect 就有效果。
+
+還有部分的事情我想在Ｑ３回。
+  
+  
+## Ｑ： 2. 承上，reselect是不是要搭配immutable，不然object跟array很難比較
+## Ａ：
+```
+reselect是不是要搭配immutable  == > 對 (這邊指的是 immutable ，而不是指 immtuableJS)
+不然object跟array很難比較      == > 不對
+```
+一樣在看看官方文件 
+[reslect's createSelector](https://github.com/reactjs/reselect#createselectorinputselectors--inputselectors-resultfunc)
+```
+createSelector determines if the value returned by an input-selector has changed between calls using reference equality (===). Inputs to selectors created with createSelector should be immutable.
+```
+這邊採用 `immutable` 的目的是為了`(基於JS語言特性下)正確的被比較`。可以看到 reselect 的 FQA 第１條就是寫 [Q: Why isn’t my selector recomputing when the input state changes?](https://github.com/reactjs/reselect#q-why-isnt-my-selector-recomputing-when-the-input-state-changes)
+```
+... Note that if you are using Redux, mutating the state object is almost certainly a mistake.
+```
+[almost certainly a mistake.](https://redux.js.org/troubleshooting)  
+  
+所以這邊我覺得用「`難`」拿描述不太對，而是 `能否(如我們人類所想的)正確被比較`。  
+不知道我有沒有誤會你所指的「`難`」，因為`比較`就是用`===`來處理，用不用 `immutable` 這邊都不會有差。如果我搞錯了，但你也能理解我這段的表達。我們就先別糾結「`難`」這詞義吧 >.<
+  
+  
+## Ｑ： 3. 進到render真的差很多嗎(假設render裡面沒有複雜計算，單純render props & state) 。[React 性能優化大挑戰：一次理解 Immutable data 跟 shouldComponentUpdate](https://blog.techbridge.cc/2018/01/05/react-render-optimization/) 這篇文章寫，有可能觸發render但實際dom沒有任何操作，我是對這文章感到有點疑惑啦，畢竟額外比較也是需要cost的，不然就全部deep equal就好了。
+## Ａ：
+  我只喵了一下techbridge的內容（沒詳讀），依我看到的那段沒錯的話，那段結論是「對的」。這邊要談的是 「render function」之後的流程為：
+```
+  1. 執行「render function」得到一個 return 值
+  2. 拿「return 值(virtual DOM) 去跟「(真正的DOM)」做「差異化比較」。
+  3. 如果 2. 的結果是「有差異」，重新「宣染有差異的DOM」
+  4. 如果 2. 的結果是「沒差異」， do nothing。
+```
+依 techbridge 的舉例
+App.js 的 `前`、`後` return 都是
+```javascript
+<div>
+  <button onClick={this.handleClick}>setState</button>
+  <Content />
+</div>
+```
+Content.js 的 `前`、`後` return 都是
+```javascript
+<div>Content</div>
+```
+
+都沒變啊，所以跟 DOM 比較起來也「不會有差異」 ＝＞ 當然就「不宣染」了。  
+承Ｑ１的問題，假如你先讀了 50 筆 todos ，而且已經「宣染」在瀏覽器上了。接者你再載入 51 ~ 100 筆的資料，此時情況為：
+```
+1. 執行「render function」得到一個 return 值
+2. 拿「return 值(virtual DOM) 去跟「(真正的DOM)」做「差異化比較」。
+3. 如果 2. 的結果是「有差異」，重新「宣染有差異的DOM」
+```
+注意！「宣染`有差異`的DOM」，也就是說真正有被「宣染」行為 update 的只有「51 ~ 100筆」這些新資料而已。(這就是為什麼 動態產生的 DOM ，它會要求你給 key 值。 react 會用來判斷，key有沒有變動。)
+
+接著談這個問題 `進到render真的差很多嗎` ，如果真的這麼單純的話，「`不會！`」。
+我們換個角度來想想這個問題，為什麼 react 會提供可以使用 `stateless function`，跟 `PureComponent`還有`Component`之間有什麼微妙的差異。
+
+`stateless function` 除了不會執行 life cycle method 之外，它「一定」會 執行 跟 return 。  
+`PureComponent` 一定會執行到`shouldComponetUpdate` ，不一定會執行到 render func。  
+`Component` (預設)一定會執行到 render func。  
+  
+如果今天 `stateless function` 只有著「一點點的運算」，但你有 100 筆 todos。  
+ 1. (stateless)那 「一點點的運算」＊100 ＋ return 100 後的差異化比較
+ 2. (PureComponent)100 次比較 nextProps.todoTitle !== this.props.todoTitle  
+
+哪種情況比較浪費呢？我沒有精準的答案！，因為「一點點的運算」，根本是個未知。真正要看這樣問題時，一定要用工具來看看執行時間。  
+（這時候就要跪拜感謝 Chrome 的 devtool 了ＱＱ，上面的推薦閱讀 Airbnb 那篇就是這樣來判斷很多情況的！這邊再推薦一次）  
+  
+然而如果(props or states)情況是「經常性變動」呢？`PureComponent` 就會變成
+```
+100 次比較 nextProps.todoTitle !== this.props.todoTitle ＋
+「一點點的運算」＊100 ＋
+render return 100 後的差異化比較
+```
+這樣的情況下，感覺又不一樣了！！，所以 techbridge 的文章才會提及 `PureComponent` 使用也是有它的議題的。
