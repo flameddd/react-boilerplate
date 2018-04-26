@@ -434,19 +434,17 @@ render () {
 
   
 # 後續ＱＡ回答（update 2018/04/26）
-```
-回答下面問題之前，我先區分兩的名詞。如果寫著是「render function」，那我指的是 React.Component 裡面的「render function」。如果寫著「宣染」，那指的是「瀏覽器」的「宣染DOM」行為。
-```
+> 回答下面問題之前，我先區分兩的名詞。如果寫著是「render function」，那我指的是 React.Component 裡面的「render function」。  
+> 如果寫著「宣染」，那指的是「瀏覽器」的「宣染DOM」行為。
+  
 ## Ｑ： 1. fetch從server的行為怎麼處理，ex request 1000 users from server, return array of object. 我想一定是新物件吧。但大部份的操作都跟server有關，寫todo demo都很方便，那如果我下標一個產品，成功需要refresh頁面(拿到剩下多少件)，每次都拿到新的object沒辨法memory.
 ## Ａ：
 先看看一些官方文件怎麼寫，[reselect](https://github.com/reactjs/reselect#reselect)
-```
-Selectors are efficient. A selector is not recomputed unless one of its arguments changes.
-```
+
+> Selectors are efficient. A selector is not recomputed unless one of its arguments changes.
+
 [redux](https://redux.js.org/recipes/computing-derived-data#creating-a-memoized-selector) (這邊可能要點進去看，搭配文字上面區塊的程式碼會更好瞭解)
-```
-We would like to replace `getVisibleTodos` with a memoized selector that recalculates `todos` when the value of `state.todos` or `state.visibilityFilter` changes, but not when changes occur in other (unrelated) parts of the state tree.
-```
+> We would like to replace `getVisibleTodos` with a memoized selector that recalculates `todos` when the value of `state.todos` or `state.visibilityFilter` changes, but not when changes occur in other (unrelated) parts of the state tree.
 
 這邊可以看到一些關鍵句：
  - `unless one of its arguments changes`
@@ -456,9 +454,9 @@ We would like to replace `getVisibleTodos` with a memoized selector that recalcu
  - 當我 `data 沒變`時，你不要重新(計算)產生一次給我。(甚至造成後面的wasted render)  
 
 redux 的架構下，除了上面這點之外，還更是因為 react-redux 運作(請參考上面內容 or 影片)的關係，很有可能繁瑣重複 get data，所造成的浪費。所以你從上面 redux 連結可以看到，它談 reselect 頁面的標題是 `Computing Derived Data`  
-```
- ... If the state tree is large, or the calculation expensive, repeating the calculation on every update may cause performance problems. Reselect can help to avoid these unnecessary recalculations.
-```
+
+>  ... If the state tree is large, or the calculation expensive, repeating the calculation on every update may cause performance problems. Reselect can help to avoid these unnecessary recalculations.
+
 
 每次取回（剩下的）todo ( = todo list changed)時， reselect 都要重算，這完全正確。但很有可能該 React.Component trigger 的原因不是 todo changed 阿(而是其他原因)，此時 reselect 就有效果。
 
@@ -473,14 +471,12 @@ reselect是不是要搭配immutable  == > 對 (這邊指的是 immutable ，而�
 ```
 一樣在看看官方文件 
 [reslect's createSelector](https://github.com/reactjs/reselect#createselectorinputselectors--inputselectors-resultfunc)
-```
-createSelector determines if the value returned by an input-selector has changed between calls using reference equality (===). Inputs to selectors created with createSelector should be immutable.
-```
+
+> createSelector determines if the value returned by an input-selector has changed between calls using reference equality (===). Inputs to selectors created with createSelector should be immutable.
+
 這邊採用 `immutable` 的目的是為了`(基於JS語言特性下)正確的被比較`。可以看到 reselect 的 FQA 第１條就是寫 [Q: Why isn’t my selector recomputing when the input state changes?](https://github.com/reactjs/reselect#q-why-isnt-my-selector-recomputing-when-the-input-state-changes)
-```
-... Note that if you are using Redux, mutating the state object is almost certainly a mistake.
-```
-[almost certainly a mistake.](https://redux.js.org/troubleshooting)  
+
+> ... Note that if you are using Redux, mutating the state object is [almost certainly a mistake.](https://redux.js.org/troubleshooting)  
   
 所以這邊我覺得用「`難`」拿描述不太對，而是 `能否(如我們人類所想的)正確被比較`。  
 不知道我有沒有誤會你所指的「`難`」，因為`比較`就是用`===`來處理，用不用 `immutable` 這邊都不會有差。如果我搞錯了，但你也能理解我這段的表達。我們就先別糾結「`難`」這詞義吧 >.<
