@@ -1,5 +1,5 @@
 ## this example is froked from [react-boilerplate/react-boilerplate](https://github.com/react-boilerplate/react-boilerplate)
-
+# [當天教學影片連結](https://www.youtube.com/watch?v=BTdXpPlBfl0)
 # 淺談 react 優化([Avoid Reconciliation](https://reactjs.org/docs/optimizing-performance.html#avoid-reconciliation)) 和 [reselect](https://github.com/reactjs/reselect)。
 
  - 攻略點　： wasted render、not recomputed unless changed。
